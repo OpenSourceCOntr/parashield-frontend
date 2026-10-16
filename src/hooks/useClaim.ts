@@ -8,6 +8,7 @@ import { invokeSubmitClaim } from '@/lib/contract';
 import { useWallet } from '@/hooks/useWallet';
 import { useToast } from '@/context/ToastContext';
 import { CLAIM_POLL_INTERVAL_MS, CLAIM_POLL_MAX_ATTEMPTS } from '@/lib/constants';
+import { devError } from '@/lib/devConsole';
 
 type ClaimStep = 'idle' | 'submitting' | 'polling' | 'done' | 'timeout' | 'error';
 
@@ -57,7 +58,7 @@ export function useClaim(policyId?: string) {
           setClaimId(null);
         }
       } catch (err) {
-        console.error('Failed to fetch existing claim:', err);
+        devError('Failed to fetch existing claim:', err);
       }
     }
 
@@ -93,7 +94,7 @@ export function useClaim(policyId?: string) {
         }
       } catch (err) {
         if (cancelledRef.current) return;
-        console.error('Error polling claim:', err);
+        devError('Error polling claim:', err);
       }
 
       count++;

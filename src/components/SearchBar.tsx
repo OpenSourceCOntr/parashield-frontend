@@ -11,6 +11,15 @@ interface SearchBarProps {
   className?:   string;
   /** Delay before `onSearch` fires after the user stops typing. */
   debounceMs?:  number;
+  /** Accessible name for the input (placeholder text is not a label). */
+  label?:       string;
+  /** id of the element whose contents this search filters (aria-controls). */
+  resultsId?:   string;
+  /**
+   * Number of results currently shown. When provided, changes are announced
+   * to screen readers via a polite live region while a query is active.
+   */
+  resultCount?: number;
 }
 
 /**
@@ -22,6 +31,9 @@ export const SearchBar = memo(function SearchBar({
   placeholder = 'Search…',
   className,
   debounceMs = 250,
+  label = 'Search',
+  resultsId,
+  resultCount,
 }: SearchBarProps) {
   const [query, setQuery] = useState('');
   const debouncedQuery   = useDebounce(query, debounceMs);
@@ -72,6 +84,8 @@ export const SearchBar = memo(function SearchBar({
         value={query}
         onChange={(e) => setQuery(e.target.value)}
         placeholder={placeholder}
+        aria-label={label}
+        aria-controls={resultsId}
         className="w-full rounded-xl border border-white/10 bg-white/5 py-2.5 pl-9 pr-4 text-sm text-white placeholder:text-gray-400 focus:border-teal-500 focus:outline-none"
       />
       {query && (
@@ -86,6 +100,13 @@ export const SearchBar = memo(function SearchBar({
         >
           <X size={14} aria-hidden="true" />
         </button>
+      )}
+      {resultCount !== undefined && (
+        <p role="status" aria-live="polite" aria-atomic="true" className="sr-only">
+          {debouncedQuery.trim()
+            ? `${resultCount} ${resultCount === 1 ? 'result' : 'results'} for "${debouncedQuery.trim()}"`
+            : ''}
+        </p>
       )}
     </div>
   );

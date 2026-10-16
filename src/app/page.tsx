@@ -201,9 +201,13 @@ export default function HomePage() {
         <SearchBar
           onSearch={setSearchQuery}
           placeholder="Search products…"
+          label="Search insurance products"
+          resultsId="product-results"
+          resultCount={loading || error ? undefined : filteredProducts.length}
           className="mb-8 max-w-md"
         />
 
+        <div id="product-results">
         {loading ? (
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
             {[1, 2, 3, 4].map((i) => <SkeletonCard key={i} />)}
@@ -238,6 +242,7 @@ export default function HomePage() {
             ))}
           </div>
         )}
+        </div>
 
         {compareIds.size > 0 && (
           <div className="fixed bottom-6 left-1/2 z-30 -translate-x-1/2 rounded-full border border-white/10 bg-gray-900/95 px-6 py-3 shadow-2xl backdrop-blur-md">
